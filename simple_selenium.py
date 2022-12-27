@@ -1,10 +1,13 @@
 #coding=utf-8
-from selenium import webdriver
 from decouple import config
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 
 class Simple_Selenium (object):
 
     def __init__(self, browser='chrome'):
+        self.Keys = Keys
         self.driver = None
         self.browser = browser
         self.check_webdriver()
@@ -44,7 +47,8 @@ class Simple_Selenium (object):
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
 
-
+    def select(self, element_name):
+        return Select(element_name)
 
 
 
