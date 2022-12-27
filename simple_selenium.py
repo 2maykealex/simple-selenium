@@ -14,6 +14,9 @@ class Simple_Selenium (object):
         self.check_webdriver()
 
     def check_webdriver(self):
+        ''' - COMPARE WEBDRIVER AND BROWSER VERSIONS - DOWNLOAD THE LATEST WEBDRIVER IF IT DOESN'T MATCH
+            - CHECK .ENV FILE THE BROWSER CONFIGURATIONS '''
+
         if (self.browser == 'chrome'):
             chrome_arguments_env = config('CHROME_ARGUMENTS').split(';') #.env file
             chrome_experimental_option_env = config('CHROME_EXPERIMENTAL_OPTION').split(';') #.env file
@@ -51,38 +54,45 @@ class Simple_Selenium (object):
     def select(self, element_name):
         return Select(element_name)
 
-    def fbc (self, class_name, all=True): #find element BY CLASS_NAME
+    def fbc (self, class_name, all=True):
+        '''FBC -> FIND ELEMENT BY CLASS_NAME (Default: all=True -> all elements)'''
         if (all):
-            return self.driver.find_elements(By.CLASS_NAME, class_name) #all
+            return self.driver.find_elements(By.CLASS_NAME, class_name)
         else:
-            return self.driver.find_element(By.CLASS_NAME, class_name) #only one (first)
+            return self.driver.find_element(By.CLASS_NAME, class_name)
 
-    def fbcs (self, css_selector, all=False): #find element BY css_selector
+    def fbcs (self, css_selector, all=False):
+        '''FBCS -> FIND ELEMENT BY CSS_SELECTOR (Default: all=False -> only one element - first)'''
         if (all):
-            return self.driver.find_elements(By.CSS_SELECTOR, css_selector) #all
+            return self.driver.find_elements(By.CSS_SELECTOR, css_selector)
         else:
-            return self.driver.find_element(By.CSS_SELECTOR, css_selector) #only one (first)
+            return self.driver.find_element(By.CSS_SELECTOR, css_selector)
 
-    def fbi (self, id, all=False): #find element BY ID
+    def fbi (self, id, all=False):
+        '''FBI -> FIND ELEMENT BY ID (Default: all=False -> only one element - first)'''
         if (all):
-            return self.driver.find_elements(By.ID, id) #all
+            return self.driver.find_elements(By.ID, id)
         else:
-            return self.driver.find_element(By.ID, id) #only one
+            return self.driver.find_element(By.ID, id)
 
-    def fbl (self, link_text): #find element BY LINK_TEXT
-        return self.driver.find_element(By.LINK_TEXT, link_text) #only one
+    def fbl (self, link_text):
+        '''FBL -> FIND ELEMENT BY LINK_TEXT (only one element)'''
+        return self.driver.find_element(By.LINK_TEXT, link_text)
 
-    def fbp (self, partial_link_text): #find element BY PARTIAL_LINK_TEXT
-        return self.driver.find_element(By.PARTIAL_LINK_TEXT, partial_link_text) #only one
+    def fbp (self, partial_link_text):
+        '''FBP -> find element BY PARTIAL_LINK_TEXT (only one element)'''
+        return self.driver.find_element(By.PARTIAL_LINK_TEXT, partial_link_text)
 
-    def fbt (self, tag, all=True): #find element BY TAG_NAME
+    def fbt (self, tag, all=True):
+        '''FBT -> FIND ELEMENT BY TAG_NAME (Default: all=True -> all elements)'''
         if (all):
-            return self.driver.find_elements(By.TAG_NAME, tag) #all
+            return self.driver.find_elements(By.TAG_NAME, tag)
         else:
-            return self.driver.find_element(By.TAG_NAME, tag) #only one (first)
+            return self.driver.find_element(By.TAG_NAME, tag)
 
-    def fbx (self, xpath): #find element BY XPATH
-        return self.driver.find_element(By.XPATH, xpath) #only one
+    def fbx (self, xpath):
+        '''FBX -> FIND ELEMENT BY XPATH (only one element)'''
+        return self.driver.find_element(By.XPATH, xpath)
 
 
 
