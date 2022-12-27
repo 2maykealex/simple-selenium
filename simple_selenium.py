@@ -94,7 +94,3 @@ class Simple_Selenium (object):
     def fbx (self, xpath):
         '''FBX -> FIND ELEMENT BY XPATH (only one element)'''
         return self.driver.find_element(By.XPATH, xpath)
-
-
-
-
