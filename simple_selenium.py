@@ -51,8 +51,9 @@ class Simple_Selenium (object):
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
 
-    def select(self, element_name):
-        return Select(element_name)
+    def select_options(self, element_name):
+        '''GET OPTIONS FROM A SELECT ELEMENT'''
+        return (Select(element_name)).options
 
     def fbc (self, class_name, all=True):
         '''FBC -> FIND ELEMENT BY CLASS_NAME (Default: all=True -> all elements)'''
