@@ -7,10 +7,12 @@ from selenium.webdriver.support.ui import Select
 
 class Simple_Selenium (object):
 
-    def __init__(self, browser='chrome'):
+    def __init__(self, browser='chrome', headless=False):
+        '''DEFAULT BROWSER=CHROME AND headless=False'''
         self.Keys = Keys
         self.driver = None
         self.browser = browser
+        self.headless = headless
         self.check_webdriver()
 
     def check_webdriver(self):
@@ -25,6 +27,9 @@ class Simple_Selenium (object):
             for option in chrome_arguments_env:
                 if (option == ''): continue
                 options.add_argument(option)
+
+            if (self.headless):
+                options.add_argument('--headless')
 
             for option in chrome_experimental_option_env:
                 if (option == ''): continue
