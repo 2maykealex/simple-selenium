@@ -103,8 +103,12 @@ class Simple_Selenium (object):
         '''FBX -> FIND ELEMENT BY XPATH (only one element)'''
         return self.driver.find_element(By.XPATH, xpath)
 
-    def wait4element(self, element_name, action='click', type='xpath', poll=5, timeOut=20):
-        '''FLUENTWAIT -> FUNCTION WORKS WITH TIMEOUT AND PRE-DEFINED ATTEMPTS'''
+    def wait4element(self, element_name, type='xpath', action='click', poll=5, timeOut=20):
+        '''FLUENTWAIT -> FUNCTION WORKS WITH TIMEOUT AND PRE-DEFINED ATTEMPTS
+        - Default type=xpath
+        - Default action='click'
+        - RETURN ONLY ONE (FIRST) ELEMENT
+        '''
         try:
             if not(element_name): return False
 
