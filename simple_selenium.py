@@ -103,49 +103,49 @@ class Simple_Selenium (object):
         '''FBX -> FIND ELEMENT BY XPATH (only one element)'''
         return self.driver.find_element(By.XPATH, xpath)
 
-    def wait4element(self, element_name, type='click', form='xpath', poll=5, timeOut=20):
+    def wait4element(self, element_name, action='click', type='xpath', poll=5, timeOut=20):
         '''FLUENTWAIT -> FUNCTION WORKS WITH TIMEOUT AND PRE-DEFINED ATTEMPTS'''
         try:
             if not(element_name): return False
 
-            if type == 'click':
-                if form == 'xpath':
+            if action == 'click':
+                if type == 'xpath':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
                                         ElementNotSelectableException]).until(
                                         EC.element_to_be_clickable((By.XPATH, element_name)))
 
-                elif form == 'id':
+                elif type == 'id':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
                                         ElementNotSelectableException]).until(
                                         EC.element_to_be_clickable((By.ID, element_name)))
 
-                elif form == 'class':
+                elif type == 'class':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
                                         ElementNotSelectableException]).until(
                                         EC.element_to_be_clickable((By.CLASS_NAME, element_name)))
 
-            elif type == 'show':
-                if form == 'xpath':
+            elif action == 'show':
+                if type == 'xpath':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
                                         ElementNotSelectableException]).until(
                                         EC.presence_of_element_located((By.XPATH, element_name)))
 
-                elif form == 'id':
+                elif type == 'id':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
                                         ElementNotSelectableException]).until(
                                         EC.presence_of_element_located((By.ID, element_name)))
 
-                elif form == 'class':
+                elif type == 'class':
                     element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                         NoSuchElementException,
                                         ElementNotVisibleException,
