@@ -1,6 +1,10 @@
 FOR SELENIUM CONFIGURATION (.ENV FILE): (USE IT JUST LIKE THIS):
 CHROME_ARGUMENTS=--test-type;--disable-gpu;--no-sandbox;--disable-infobars;--disable-extensions;--disable-automation;--log-level=3;
 CHROME_EXPERIMENTAL_OPTION=excludeSwitches:[ignore-certificate-errors,enable-automation,enable-logging];useAutomationExtension:False;
+HEADLESS=True
+#or
+HEADLESS=
+
 
 LIST OF CHROMEDRIVER COMMAND LINE ARGUMENTS ON LINK:
 https://gist.github.com/ntamvl/4f93bbb7c9b4829c601104a2d2f91fe5
