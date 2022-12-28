@@ -106,21 +106,21 @@ class Simple_Selenium (object):
     def wait4element(self, element_name, type='click', form = 'xpath', poll=2, timeOut=5):
         if type == 'click':
             if form == 'xpath':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
                                     EC.element_to_be_clickable((By.XPATH, element_name)))
 
             elif form == 'id':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
                                     EC.element_to_be_clickable((By.ID, element_name)))
 
             elif form == 'class':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
@@ -128,21 +128,21 @@ class Simple_Selenium (object):
 
         elif type == 'show':
             if form == 'xpath':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
                                     EC.presence_of_element_located((By.XPATH, element_name)))
 
             elif form == 'id':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
                                     EC.presence_of_element_located((By.ID, element_name)))
 
             elif form == 'class':
-                element = WebDriverWait(self.driver,timeOut,poll_frequency=poll,ignored_exceptions=[
+                element = WebDriverWait(self.driver, timeOut, poll_frequency=poll, ignored_exceptions=[
                                     NoSuchElementException,
                                     ElementNotVisibleException,
                                     ElementNotSelectableException]).until(
