@@ -10,12 +10,11 @@ from selenium.common.exceptions import NoSuchElementException, ElementNotVisible
 
 class Simple_Selenium (object):
 
-    def __init__(self, browser='chrome', headless=False):
+    def __init__(self, browser='chrome'):
         '''DEFAULT BROWSER=CHROME AND headless=False'''
         self.Keys = Keys
         self.driver = None
         self.browser = browser
-        self.headless = headless
         self.check_webdriver()
 
     def check_webdriver(self):
@@ -27,12 +26,13 @@ class Simple_Selenium (object):
             chrome_experimental_option_env = config('CHROME_EXPERIMENTAL_OPTION').split(';') #.env file
 
             options = webdriver.ChromeOptions()
+
+            if (config('HEADLESS')):
+                options.add_argument('--headless')
+
             for option in chrome_arguments_env:
                 if (option == ''): continue
                 options.add_argument(option)
-
-            if (self.headless):
-                options.add_argument('--headless')
 
             for option in chrome_experimental_option_env:
                 if (option == ''): continue
