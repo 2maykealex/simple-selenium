@@ -1,5 +1,7 @@
 #coding=utf-8
 from decouple import config
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -54,8 +56,6 @@ class Simple_Selenium (object):
 
                 options.add_experimental_option(option[0], value)
 
-            from webdriver_manager.chrome import ChromeDriverManager
-            from selenium.webdriver.chrome.service import Service
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
 
