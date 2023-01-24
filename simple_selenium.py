@@ -38,23 +38,46 @@ class Simple_Selenium (object):
 
             for option in chrome_experimental_option_env:
                 if (option == ''): continue
-                option = option.split(':')
-                if ('[' in option[-1]):
-                    value = []
-                    if (',' in option[-1]):
-                        subOptions = option[-1].replace('[','').replace(']','').split(',')
-                        for subOpt in subOptions:
-                            value.append(subOpt)
-                    else:
-                        value.append(option[-1].replace('[','').replace(']',''))
 
-                elif ('True' in option[-1]):
-                    value = True
+                option = option.replace(' ', '')
+                if ('{' in option):
+                    value = {}
+                    k = option.replace('}', '').split(':{')[0]
+                    values = option.replace('}', '').split(':{')[-1].split(',')
+                    for v in values:
+                        parametros = v.split(':')
+                        if (parametros[0].isnumeric()):
+                            try:
+                                parametros[0] = int(parametros[0])
+                            except:
+                                parametros[0] = float(parametros[0])
 
-                elif ('False' in option[-1]):
-                    value = False
+                        if ('True' in parametros[1] or 'False' in parametros[1]):
+                            parametros[1] = True if (parametros[1] == 'True') else False
+                        else:
+                            parametros[1] = '{}'.format(parametros[1])
 
-                options.add_experimental_option(option[0], value)
+                        value.update({parametros[0]: parametros[1]})
+
+                else:
+                    option = option.split(':')
+                    k = option[0]
+                    if ('[' in option[-1]):
+                        value = []
+                        if (',' in option[-1]):
+                            subOptions = option[-1].replace('[','').replace(']','').split(',')
+                            for subOpt in subOptions:
+                                value.append(subOpt)
+                        else:
+                            value.append(option[-1].replace('[','').replace(']',''))
+
+                    elif ('True' in option[-1]):
+                        value = True
+
+                    elif ('False' in option[-1]):
+                        value = False
+
+                options.add_experimental_option(k, value)
 
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
