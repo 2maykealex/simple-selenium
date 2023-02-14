@@ -2,11 +2,12 @@ INSTALL REQUIREMENTS:
 pip install -r .\.requirements.py
 
 FOR SELENIUM CONFIGURATION (.ENV FILE): (USE IT JUST LIKE THIS):
-CHROME_ARGUMENTS=--test-type;--disable-gpu;--no-sandbox;--disable-infobars;--disable-extensions;--disable-automation;--log-level=3;
+CHROME_ARGUMENTS=--test-type;--disable-gpu;--no-sandbox;--disable-infobars;--disable-extensions;--disable-automation;--log-level=3;--no-sandbox;--window-size=1350,720;
 CHROME_EXPERIMENTAL_OPTION=excludeSwitches:[ignore-certificate-errors,enable-automation,enable-logging];prefs:{credentials_enable_service: False, profile.password_manager_enabled: False};useAutomationExtension:False;
-HEADLESS=True
-#or
+
 HEADLESS=
+WIND_MAX=
+WIND_MIN=
 
 
 LIST OF CHROMEDRIVER COMMAND LINE ARGUMENTS ON LINK:
