@@ -26,11 +26,13 @@ class Simple_Selenium (object):
         if (self.browser == 'chrome'):
             chrome_arguments_env = config('CHROME_ARGUMENTS').split(';') #.env file
             chrome_experimental_option_env = config('CHROME_EXPERIMENTAL_OPTION').split(';') #.env file
-
             options = webdriver.ChromeOptions()
 
-            if (config('HEADLESS')):
-                options.add_argument('--headless')
+            try:
+                if (config('HEADLESS')):
+                    options.add_argument('--headless')
+            except:
+                pass
 
             for option in chrome_arguments_env:
                 if (option == ''): continue
@@ -81,6 +83,17 @@ class Simple_Selenium (object):
 
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
+            try:
+                if (config('WIND_MAX')):
+                    self.driver.maximize_window()
+            except:
+                pass
+
+            try:
+                if (config('WIND_MIN')):
+                    self.driver.minimize_window()
+            except:
+                pass
 
     def select_options(self, element_name):
         '''GET OPTIONS FROM A SELECT ELEMENT'''
