@@ -1,4 +1,7 @@
 #coding=utf-8
+from os import path
+from json import dumps
+from pathlib import Path
 from decouple import config
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -17,11 +20,47 @@ class Simple_Selenium (object):
         self.Keys = Keys
         self.driver = None
         self.browser = browser
+        self.download_path = path.expanduser('~') + '\\Downloads'
         self.check_webdriver()
 
     def check_webdriver(self):
         ''' - COMPARE WEBDRIVER AND BROWSER VERSIONS - DOWNLOAD THE LATEST WEBDRIVER IF IT DOESN'T MATCH
             - CHECK .ENV FILE THE BROWSER CONFIGURATIONS '''
+
+        def set_download_folder():
+            '''- THE DEFAULT DOWNLOAD FOLDER WILL ONLY BE CHANGED TO THE ROOT OF THE SCRIPT IF THE "DOWNLOAD_FOLDER" VARIABLE IS SET TO "TRUE".
+               - THE DEFAULT DOWNLOAD FOLDER WILL ONLY BE CHANGED TO ANY OTHER LOCATION IF THE "CHANGE_DOWNLOAD_FOLDER" VARIABLE CONTAINS THE ADDRESS OF THE DESIRED NEW FOLDER.'''
+
+            self.download_path = str('{}\\DOWNLOADS'.format(path.dirname(path.realpath(__file__)))) #at the root of the project
+            try:
+                if (config('CHANGE_DOWNLOAD_FOLDER')): #path to the other folder configured in the .env file.
+                    self.download_path = config('CHANGE_DOWNLOAD_FOLDER')
+            except:
+                pass
+
+            render_image = 0
+            try:
+                if (config('NOT_RENDER_IMAGE')):
+                    render_image = 2
+            except:
+                pass
+
+            Path(self.download_path).mkdir(parents=True, exist_ok=True)
+            settings = {"recentDestinations": [{"id": "Save as PDF",
+                                                "origin": "local",
+                                                "account": ""}],
+                        "selectedDestinationId": "Save as PDF", "version": 2}
+            prefs = {"download.default_directory": "{}".format(self.download_path),
+                    'printing.print_preview_sticky_settings.appState': dumps(settings),
+                    'savefile.default_directory': "{}".format(self.download_path),
+                    "enabled": False,
+                    "name": "Chrome PDF Viewer",
+                    "credentials_enable_service": False,
+                    "profile.password_manager_enabled": False,
+                    "profile.cookies": 2,
+                    "profile.geolocation": 2,
+                    "profile.managed_default_content_settings.images": render_image}
+            return prefs
 
         if (self.browser == 'chrome'):
             chrome_arguments_env = config('CHROME_ARGUMENTS').split(';') #.env file
@@ -79,7 +118,12 @@ class Simple_Selenium (object):
                     elif ('False' in option[-1]):
                         value = False
 
-                options.add_experimental_option(k, value)
+                        options.add_experimental_option(k, value)
+            try:
+                if (config('DOWNLOAD_FOLDER')):
+                    options.add_experimental_option("prefs", set_download_folder())
+            except:
+                pass
 
             service = Service(ChromeDriverManager().install())
             self.driver = webdriver.Chrome(service=service, options=options)
@@ -88,10 +132,9 @@ class Simple_Selenium (object):
                     self.driver.maximize_window()
             except:
                 pass
-
             try:
                 if (config('WIND_MIN')):
-                    self.driver.minimize_window()
+                    self.driver.maximize_window()
             except:
                 pass
 
