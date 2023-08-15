@@ -1,8 +1,9 @@
 #coding=utf-8
 from os import path
-from json import dumps
+from sys import exc_info
 from pathlib import Path
 from decouple import config
+from json import dump, dumps, load
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
@@ -26,6 +27,21 @@ class Simple_Selenium (object):
     def check_webdriver(self):
         ''' - COMPARE WEBDRIVER AND BROWSER VERSIONS - DOWNLOAD THE LATEST WEBDRIVER IF IT DOESN'T MATCH
             - CHECK .ENV FILE THE BROWSER CONFIGURATIONS '''
+
+        def remove_oldest_version(versions_list):
+            if len(versions_list) >= 5:
+                versions_list.pop()
+
+        def check_versions(json_path):
+            chrome_version = self.driver.capabilities['browserVersion']
+            remove_oldest_version(versions)
+            if chrome_version not in versions:
+                versions.append(chrome_version)
+                sorted_versions = sorted(versions, reverse=True)
+                data['chromedriver_versions'] = sorted_versions
+                # Salva o arquivo atualizado
+                with open(json_path, 'w') as file:
+                    dump(data, file, indent=2)  # O indent=2 é opcional e formata o arquivo JSON de forma mais legível
 
         def set_download_folder():
             '''- THE DEFAULT DOWNLOAD FOLDER WILL ONLY BE CHANGED TO THE ROOT OF THE SCRIPT IF THE "DOWNLOAD_FOLDER" VARIABLE IS SET TO "TRUE".
@@ -125,8 +141,40 @@ class Simple_Selenium (object):
             except:
                 pass
 
-            service = Service(ChromeDriverManager().install())
-            self.driver = webdriver.Chrome(service=service, options=options)
+            versions = []
+            script_dir = path.dirname(path.abspath(__file__))
+            json_path = path.join(script_dir, 'chrome_driver_versions.json')
+            try:
+                with open(json_path, 'r') as file: # Abre o arquivo JSON
+                    data = load(file)
+                versions = sorted(data['chromedriver_versions'], reverse=True)
+            except:
+                versions.append('')
+                pass
+
+            match_version = False
+            for version in versions:
+                try:
+                    if (not(version)): service = Service(ChromeDriverManager().install())
+                    service = Service(ChromeDriverManager(version=version).install())
+                    self.driver = webdriver.Chrome(service=service, options=options)
+                    match_version = True
+                    check_versions(json_path)
+                    break
+                except Exception as err:
+                    exception_type, exception_object, exception_traceback = exc_info()
+                    line_number = exception_traceback.tb_lineno
+                    print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(err, line_number))
+
+            if (not(match_version)):
+                print('NÃO FOI ENCONTRADA UMA VERSÃO VÁLIDA')
+                return False
+
+            try:
+                if (config('BROWSER_POSITION_X') and config('BROWSER_POSITION_Y')):
+                    self.driver.set_window_position(config('BROWSER_POSITION_X'), config('BROWSER_POSITION_Y'))
+            except:
+                pass
             try:
                 if (config('WIND_MAX')):
                     self.driver.maximize_window()
@@ -239,3 +287,15 @@ class Simple_Selenium (object):
 
         except:
             return False
+
+    def change_background_color(self):
+        try:
+            if (config('BG_COLOR')):
+                js_code = "document.body.style.backgroundColor = '{}';".format(config('BG_COLOR'))
+                self.driver.execute_script(js_code)
+        except:
+            pass
+
+    def go_to_url(self, url):
+        self.driver.get(url)
+        self.change_background_color()
