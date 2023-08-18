@@ -242,7 +242,11 @@ class Simple_Selenium (object):
             except Exception as err:
                 exception_type, exception_object, exception_traceback = exc_info()
                 line_number = exception_traceback.tb_lineno
-                print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(err, line_number))
+                try:
+                    _error_ = err.msg
+                except:
+                    _error_ = err
+                print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
 
         if (not(match_version)):
             print('NÃO FOI ENCONTRADA UMA VERSÃO VÁLIDA')
