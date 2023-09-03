@@ -30,6 +30,9 @@ class Simple_Selenium (object):
         self.driver.get(url)
         self.change_background_color()
 
+    def switch_to_windows(self, window_number=-1):
+        self.driver.switch_to.window(self.driver.window_handles[window_number])
+
     def fbc (self, class_name, all=True):
         '''FBC -> FIND ELEMENT BY CLASS_NAME (Default: all=True -> all elements)'''
         if (all):
@@ -207,12 +210,13 @@ class Simple_Selenium (object):
         def check_versions():
             chrome_version = self.driver.capabilities['browserVersion']
             remove_oldest_version()
+            data['chromedriver_versions_last_used'] = chrome_version
             if (chrome_version not in versions):
                 versions.append(chrome_version)
                 sorted_versions = sorted(versions, reverse=True)
                 data['chromedriver_versions'] = sorted_versions
-                with open(json_path, 'w') as file:
-                    dump(data, file, indent=2)
+            with open(json_path, 'w') as file:
+                dump(data, file, indent=2)
 
         versions = []
         script_dir = path.dirname(path.abspath(__file__))
@@ -225,7 +229,18 @@ class Simple_Selenium (object):
         try:
             with open(json_path, 'r') as file: # open JSON
                 data = load(file)
+
+            versions = data['chromedriver_versions']
+            last_used_version = None
+            try:
+                last_used_version = data['chromedriver_versions_last_used']
+                if (last_used_version in versions):
+                    versions.remove(last_used_version)
+            except:
+                pass
             versions = sorted(data['chromedriver_versions'], reverse=True)
+            if (last_used_version):
+                versions.insert(0, last_used_version)
         except:
             versions.append('')
             pass
@@ -245,7 +260,10 @@ class Simple_Selenium (object):
                 try:
                     _error_ = err.msg
                 except:
-                    _error_ = err
+                    try:
+                        _error_ = '|'.join(err.args)
+                    except:
+                        _error_ = err
                 print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
 
         if (not(match_version)):
