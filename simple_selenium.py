@@ -13,12 +13,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class Simple_Selenium (object):
 
-    def __init__(self, browser='chrome'):
+    def __init__(self, browser='chrome', personal_download_path= ''):
         '''DEFAULT BROWSER=CHROME AND headless=False'''
         self.Keys = Keys
         self.By = By
         self.driver = None
         self.browser = browser
+        self.personal_download_path = personal_download_path
         self.download_path = path.expanduser('~') + '\\Downloads'
         self.check_webdriver()
 
@@ -95,6 +96,9 @@ class Simple_Selenium (object):
                     self.download_path = config('CHANGE_DOWNLOAD_FOLDER')
             except:
                 pass
+
+            if (self.personal_download_path):
+                self.download_path = '{}\\{}'.format(self.download_path , self.personal_download_path)
 
             render_image = 0
             try:
