@@ -253,7 +253,7 @@ class Simple_Selenium (object):
         for version in versions:
             try:
                 if (not(version)): service = Service(ChromeDriverManager().install())
-                service = Service(ChromeDriverManager(version=version).install())
+                service = Service(ChromeDriverManager(driver_version=version).install())
                 self.driver = webdriver.Chrome(service=service, options=options)
                 match_version = True
                 check_versions()
