@@ -1,7 +1,7 @@
 #coding=utf-8
-from os import path
 from sys import exc_info
 from pathlib import Path
+from os import path, walk
 from decouple import config
 from selenium import webdriver
 from json import dump, dumps, load
@@ -13,14 +13,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class Simple_Selenium (object):
 
-    def __init__(self, browser='chrome', personal_download_path= ''):
+    def __init__(self, browser='chrome'):
         '''DEFAULT BROWSER=CHROME AND headless=False'''
         self.Keys = Keys
         self.By = By
         self.driver = None
         self.browser = browser
-        self.personal_download_path = personal_download_path
         self.download_path = path.expanduser('~') + '\\Downloads'
+        self.chromedriver_path = path.expanduser('~') + '\\.wdm\\drivers\\chromedriver\\win32'
         self.check_webdriver()
 
     def select_options(self, element_name):
@@ -30,9 +30,6 @@ class Simple_Selenium (object):
     def go_to_url(self, url):
         self.driver.get(url)
         self.change_background_color()
-
-    def switch_to_windows(self, window_number=-1):
-        self.driver.switch_to.window(self.driver.window_handles[window_number])
 
     def fbc (self, class_name, all=True):
         '''FBC -> FIND ELEMENT BY CLASS_NAME (Default: all=True -> all elements)'''
@@ -96,9 +93,6 @@ class Simple_Selenium (object):
                     self.download_path = config('CHANGE_DOWNLOAD_FOLDER')
             except:
                 pass
-
-            if (self.personal_download_path):
-                self.download_path = '{}\\{}'.format(self.download_path , self.personal_download_path)
 
             render_image = 0
             try:
@@ -214,13 +208,12 @@ class Simple_Selenium (object):
         def check_versions():
             chrome_version = self.driver.capabilities['browserVersion']
             remove_oldest_version()
-            data['chromedriver_versions_last_used'] = chrome_version
             if (chrome_version not in versions):
                 versions.append(chrome_version)
                 sorted_versions = sorted(versions, reverse=True)
                 data['chromedriver_versions'] = sorted_versions
-            with open(json_path, 'w') as file:
-                dump(data, file, indent=2)
+                with open(json_path, 'w') as file:
+                    dump(data, file, indent=2)
 
         versions = []
         script_dir = path.dirname(path.abspath(__file__))
@@ -233,18 +226,7 @@ class Simple_Selenium (object):
         try:
             with open(json_path, 'r') as file: # open JSON
                 data = load(file)
-
-            versions = data['chromedriver_versions']
-            last_used_version = None
-            try:
-                last_used_version = data['chromedriver_versions_last_used']
-                if (last_used_version in versions):
-                    versions.remove(last_used_version)
-            except:
-                pass
             versions = sorted(data['chromedriver_versions'], reverse=True)
-            if (last_used_version):
-                versions.insert(0, last_used_version)
         except:
             versions.append('')
             pass
@@ -253,7 +235,7 @@ class Simple_Selenium (object):
         for version in versions:
             try:
                 if (not(version)): service = Service(ChromeDriverManager().install())
-                service = Service(ChromeDriverManager(driver_version=version).install())
+                service = Service(ChromeDriverManager(version=version).install())
                 self.driver = webdriver.Chrome(service=service, options=options)
                 match_version = True
                 check_versions()
@@ -268,11 +250,35 @@ class Simple_Selenium (object):
                         _error_ = '|'.join(err.args)
                     except:
                         _error_ = err
-                print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
+                # print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
 
-        if (not(match_version)):
+            if (versions.index(version) == (len(versions)-1)): # if is the last version in test
+                if (not(match_version)):
+                    nome_arquivo = 'chromedriver.exe'
+                    for pasta_raiz, sub_pastas, arquivos in walk(self.chromedriver_path):
+                        sub_pastas.reverse()
+                        print(pasta_raiz)
+                        if nome_arquivo in arquivos:
+                            try:
+                                executable_path = path.join(pasta_raiz, nome_arquivo)
+                                if path.exists(executable_path):
+                                    service = Service(executable_path=executable_path)
+                                    # self.driver = webdriver.Chrome(executable_path=executable_path, service=service, options=options)
+                                else:
+                                    executable_path=None
+                                    service = Service(ChromeDriverManager(version=version).install())
+                                    # self.driver = webdriver.Chrome(service=service, options=options)
+                                self.driver = webdriver.Chrome(executable_path=executable_path, service=service, options=options)
+                                break
+                            except Exception as err:
+                                # service = Service(ChromeDriverManager(version=version).install())
+                                exception_type, exception_object, exception_traceback = exc_info()
+                                line_number = exception_traceback.tb_lineno
+                                print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
+
+
             print('NÃO FOI ENCONTRADA UMA VERSÃO VÁLIDA')
-            return False
+            # return False
 
     def wait4element(self, element_name, type='xpath', action='click', poll=5, timeOut=20):
         '''FLUENTWAIT -> FUNCTION WORKS WITH TIMEOUT AND PRE-DEFINED ATTEMPTS
