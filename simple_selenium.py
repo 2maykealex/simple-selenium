@@ -280,7 +280,6 @@ class Simple_Selenium (object):
                     nome_arquivo = 'chromedriver.exe'
                     for pasta_raiz, sub_pastas, arquivos in walk(self.chromedriver_path):
                         sub_pastas.reverse()
-                        print(pasta_raiz)
                         if nome_arquivo in arquivos:
                             try:
                                 executable_path = path.join(pasta_raiz, nome_arquivo)
@@ -291,9 +290,9 @@ class Simple_Selenium (object):
                                     cdm_service = ChromeDriverManager(version=version).install()
                                     service = Service(cdm_service, executable_path=executable_path)
                                 self.driver = webdriver.Chrome(service=service, options=options)
+                                match_version = True
                                 break
                             except Exception as err:
-                                # service = Service(ChromeDriverManager(version=version).install())
                                 exception_type, exception_object, exception_traceback = exc_info()
                                 line_number = exception_traceback.tb_lineno
                                 print('\n <<< HOUVE UM ERRO INESPERADO EM -> {} NA LINHA {} DO simple_selenium>>>'.format(_error_, line_number))
