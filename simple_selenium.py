@@ -286,12 +286,11 @@ class Simple_Selenium (object):
                                 executable_path = path.join(pasta_raiz, nome_arquivo)
                                 if path.exists(executable_path):
                                     service = Service(executable_path=executable_path)
-                                    # self.driver = webdriver.Chrome(executable_path=executable_path, service=service, options=options)
                                 else:
                                     executable_path=None
-                                    service = Service(ChromeDriverManager(version=version).install())
-                                    # self.driver = webdriver.Chrome(service=service, options=options)
-                                self.driver = webdriver.Chrome(executable_path=executable_path, service=service, options=options)
+                                    cdm_service = ChromeDriverManager(version=version).install()
+                                    service = Service(cdm_service, executable_path=executable_path)
+                                self.driver = webdriver.Chrome(service=service, options=options)
                                 break
                             except Exception as err:
                                 # service = Service(ChromeDriverManager(version=version).install())
