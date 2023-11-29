@@ -196,22 +196,6 @@ class Simple_Selenium (object):
             except:
                 pass
 
-            try:
-                if (config('BROWSER_POSITION_X') and config('BROWSER_POSITION_Y')):
-                    self.driver.set_window_position(config('BROWSER_POSITION_X'), config('BROWSER_POSITION_Y'))
-            except:
-                pass
-            try:
-                if (config('WIND_MAX')):
-                    self.driver.maximize_window()
-            except:
-                pass
-            try:
-                if (config('WIND_MIN')):
-                    self.driver.maximize_window()
-            except:
-                pass
-
             return self.initialize_chrome_driver(options)
 
     def initialize_chrome_driver(self, options):
@@ -304,6 +288,30 @@ class Simple_Selenium (object):
         if (not(match_version)):
             print('NÃO FOI ENCONTRADA UMA VERSÃO VÁLIDA')
             return False
+
+        self.set_drive_configs()
+
+    def set_drive_configs(self):
+        try:
+            if (config('BROWSER_WIDTH') and config('BROWSER_HEIGHT')):
+                self.driver.set_window_size(config('BROWSER_WIDTH'), config('BROWSER_HEIGHT'))
+        except:
+            pass
+        try:
+            if (config('BROWSER_POSITION_X') and config('BROWSER_POSITION_Y')):
+                self.driver.set_window_position(config('BROWSER_POSITION_X'), config('BROWSER_POSITION_Y'))
+        except:
+            pass
+        try:
+            if (config('WIND_MAX')):
+                self.driver.maximize_window()
+        except:
+            pass
+        try:
+            if (config('WIND_MIN')):
+                self.driver.maximize_window()
+        except:
+            pass
 
     def wait4element(self, element_name, type='xpath', action='click', poll=5, timeOut=20):
         '''FLUENTWAIT -> FUNCTION WORKS WITH TIMEOUT AND PRE-DEFINED ATTEMPTS
