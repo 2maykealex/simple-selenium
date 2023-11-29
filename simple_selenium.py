@@ -10,6 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (NoSuchElementException,
                                         ElementNotVisibleException,
@@ -27,6 +28,9 @@ class Simple_Selenium (object):
         self.download_path = path.expanduser('~') + '\\Downloads'
         self.chromedriver_path = path.expanduser('~') + '\\.wdm\\drivers\\chromedriver\\win32'
         self.check_webdriver()
+
+    def action_chains(self):
+        return ActionChains(self.driver)
 
     def select_options(self, element_name):
         '''GET OPTIONS FROM A SELECT ELEMENT'''
